@@ -1,13 +1,16 @@
 name: CI Checklist
 
-# Run from the Actions tab. The project is committed to main only if every check passes.
+# Run from the Actions tab. Uploaded changes are committed to main only if every check passes.
 on:
   workflow_dispatch:
     inputs:
       source_branch:
-        description: Branch holding the uploaded project
+        description: Branch holding the uploaded changes
         required: true
         default: upload-staging
+      commit_message:
+        description: Commit message
+        required: true
 
 permissions:
   contents: write
@@ -24,7 +27,7 @@ jobs:
     outputs:
       sha: ${{ steps.version.outputs.sha }}
     steps:
-      - name: Check out the uploaded project
+      - name: Check out the uploaded changes
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.source_branch }}
@@ -81,30 +84,27 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Commit the project in parts
+      - name: Commit the checked changes
+        env:
+          COMMIT_MESSAGE: ${{ inputs.commit_message }}
         run: |
           set -euo pipefail
           git fetch origin "$SOURCE_SHA"
 
-          commit_part() {
-            message="$1"; shift
-            git checkout "$SOURCE_SHA" -- "$@"
-            if git diff --cached --quiet; then
-              echo "Nothing new for: $message"
-            else
-              git commit -m "$message"
-            fi
-          }
+          if ! git merge-base --is-ancestor HEAD "$SOURCE_SHA"; then
+            echo "::error::The upload is behind main. Rebuild it from the latest main."; exit 1
+          fi
+          if ! git diff --quiet HEAD "$SOURCE_SHA" -- .github/workflows; then
+            echo "::error::Workflow files cannot be changed through this workflow."; exit 1
+          fi
 
-          commit_part "Add project documentation and setup files" ppa/README.md ppa/package.json ppa/.gitignore
-          commit_part "Add server API" ppa/server ':(exclude)ppa/server/uploads'
-          commit_part "Add client web app" ppa/client
-          commit_part "Add battery product data" batteries.csv
-          commit_part "Add product photos" ppa/server/uploads
-
-          # main must now match the checked upload exactly
-          git diff --exit-code "$SOURCE_SHA" HEAD
-          git push origin HEAD:main
+          git read-tree -u --reset "$SOURCE_SHA"
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit"
+          else
+            git commit -m "$COMMIT_MESSAGE"
+            git push origin HEAD:main
+          fi
 
       - name: Summary
         run: |
@@ -117,6 +117,6 @@ jobs:
             echo
             echo '### Commits on main'
             echo '```'
-            git log --format='%h  %an  %s'
+            git log -10 --format='%h  %an  %s'
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
