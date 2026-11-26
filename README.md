@@ -12,6 +12,10 @@
 
 A full-stack web app for a multi-brand battery shop, with a customer website and an admin console.
 
+**Preview:** <https://ppa-battery-store.onrender.com>
+
+This is a demo on Render's free plan with a test database, not the shop's live service. Log in or create a test account to browse, and don't enter real personal details. The first visit after a quiet spell takes about a minute. Email and photo uploads are not set up.
+
 ## Features
 
 **Customer website**
@@ -82,6 +86,7 @@ Each change below was committed by **CI Checklist** only after its selected chec
 | Update documentation and fix shop closing time | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45841741800) |
 | Add Exide and Bosch products and update the shop phone number | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45847578087) |
 | Add Vercel deployment support | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45849803663) |
-| Set up a free Render preview | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/ci-checklist.yml) |
+| Set up a free Render preview | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45853454914) |
+| Add the preview link to the README | ✅ | – | – | – | – | – | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/ci-checklist.yml) |
 
 ✅ passed before the commit · – not selected for that commit
