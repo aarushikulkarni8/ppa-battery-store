@@ -100,7 +100,7 @@ interface ParsedRow {
 
 
 const bodySchema = z.object({
-  rows: z.array(z.record(z.unknown())).min(1, 'The file has no rows').max(2000, 'Import at most 2000 rows at a time'),
+  rows: z.array(z.record(z.string(), z.unknown())).min(1, 'The file has no rows').max(2000, 'Import at most 2000 rows at a time'),
   firstLine: z.number().int().min(1).optional().default(2),
 });
 

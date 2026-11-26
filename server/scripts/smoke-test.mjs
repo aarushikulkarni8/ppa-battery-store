@@ -129,6 +129,42 @@ if (!ADMIN_PASSWORD) {
   r = await call('admin', '/admin/brands', { body: { name: 'Test Brand ' + Date.now().toString().slice(-4) } });
   ok(r.status === 201, 'brand added');
   await call('admin', `/admin/brands/${r.data.brand._id}`, { method: 'DELETE' });
+
+  console.log('\nProduct forms, import, shop sale and PCB orders');
+  const tag = Date.now().toString().slice(-6);
+  const brandId = (await call('admin', '/admin/brands')).data.brands[0]._id;
+  const base = { brand: brandId, name: `Test Battery ${tag}`, model: `TB${tag}`, sku: `TB-${tag}`, vehicleCategory: 'FOUR_WHEELER', voltage: '12', capacityAh: '35', warranty: { totalMonths: '24' } };
+  r = await call('admin', '/admin/products', { body: { ...base, cca: '', dimensions: { lengthMm: '200' } } });
+  const made = r.data?.product;
+  ok(r.status === 201 && made.productType === 'BATTERY' && made.voltage === 12 && made.cca === null && made.dimensions.lengthMm === 200,
+    'product created from form values', JSON.stringify(r.data));
+  ok(made?.inverterSpecs?.waveform === '' && made?.inverterSpecs?.recommendedBattery === '' && made?.series === '', 'unfilled fields get their defaults', JSON.stringify(made?.inverterSpecs));
+  r = await call('admin', `/admin/products/${made?._id}`, { method: 'PUT', body: { ...base, series: 'Updated' } });
+  ok(r.status === 200 && r.data.product.series === 'Updated', 'product updated', JSON.stringify(r.data));
+  r = await call('admin', '/admin/products', { body: { ...base, sku: `INV-${tag}`, productType: 'INVERTER', vehicleCategory: 'INVERTER' } });
+  ok(r.status === 400 && /VA rating/.test(r.data.message), 'inverter without VA rating refused', JSON.stringify(r.data));
+
+  r = await call('admin', '/admin/import/products', { body: { rows: [{ sku: `IMP-${tag}`, brand: 'Amaron', name: `Imported ${tag}`, model: `IM${tag}`, category: 'car', capacityAh: '45', warrantyTotalMonths: '36', stock: '4', mrp: '5000', sellingPrice: '4500' }] } });
+  ok(r.status === 200 && r.data.created === 1, 'spreadsheet import creates a product', JSON.stringify(r.data));
+  r = await call('admin', '/admin/import/products', { body: { rows: [{ sku: `IMP-${tag}`, sellingPrice: '4400' }] } });
+  ok(r.status === 200 && r.data.updated === 1, 'price-only import updates it', JSON.stringify(r.data));
+  const imported = (await call('admin', `/admin/products?q=IMP-${tag}`)).data.products[0];
+  ok(imported?.sellingPrice === 4400 && imported.name === `Imported ${tag}` && imported.stock === 4, 'price-only import keeps other details');
+  r = await call('admin', '/admin/import/products', { body: { rows: [{ sku: `BAD-${tag}` }] } });
+  ok(r.status === 422 && r.data.problems.length === 1, 'bad import row refused', JSON.stringify(r.data));
+
+  r = await call('admin', '/admin/sales', { body: { customer: { mobile: '8' + mobile.slice(1), name: 'Shop Customer' }, items: [{ productId: imported?._id, quantity: '1', unitPrice: '4400' }], paymentMethod: 'UPI' } });
+  ok(r.status === 201, 'shop sale recorded', JSON.stringify(r.data));
+  r = await call('admin', '/admin/sales', { body: { customer: { mobile }, items: [], paymentMethod: 'CASH' } });
+  ok(r.status === 400, 'shop sale without items refused');
+
+  r = await call('admin', '/admin/products', { body: { brand: brandId, name: `Test PCB ${tag}`, model: `PCB${tag}`, sku: `PCB-${tag}`, productType: 'PCB', vehicleCategory: 'OTHER', warranty: { totalMonths: 0 } } });
+  const pcb = r.data?.product;
+  ok(r.status === 201, 'PCB product created without voltage', JSON.stringify(r.data));
+  r = await call('customer', '/pcb-orders', { body: { productId: pcb?._id, quantity: '5' } });
+  ok(r.status === 201, 'PCB order placed ' + (r.data?.orderNumber ?? ''), JSON.stringify(r.data));
+  r = await call('customer', '/pcb-orders', { body: { productId: pcb?._id, quantity: 0 } });
+  ok(r.status === 400 && /at least 1/.test(r.data.message), 'PCB order with zero quantity refused', JSON.stringify(r.data));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

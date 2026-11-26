@@ -47,7 +47,7 @@ const productSchema = z.object({
       recommendedBattery: z.string().trim().max(120).optional().default(''),
     })
     .optional()
-    .default({}),
+    .prefault({}),
   warranty: z.object({
     totalMonths: z.coerce.number().int().min(0),
     freeMonths: numOrNull.optional(),
