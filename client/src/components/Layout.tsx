@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, UserRound, MapPin, LogOut, ChevronDown, CarFront } from 'lucide-react';
 import { api } from '../api/client';
@@ -118,6 +118,15 @@ function Header() {
             <Logo light />
           </Link>
           <HeaderSearch className="order-last w-full md:order-none md:mx-2 md:flex-1" />
+          {!customer && (
+            <Link
+              to={`/login?next=${encodeURIComponent(here)}`}
+              className="flex items-center gap-1.5 rounded px-2 py-1 text-[14px] font-semibold text-white hover:ring-1 hover:ring-white/40"
+            >
+              <UserRound className="h-5 w-5" /> Log in
+            </Link>
+          )}
+          {customer && (
           <div className="relative" ref={menuRef}>
             <button
               className="flex items-center gap-2 rounded px-2 py-1 text-left text-white hover:ring-1 hover:ring-white/40"
@@ -145,8 +154,9 @@ function Header() {
                   role="menuitem"
                   className="mt-1 flex w-full items-center gap-2 rounded border-t border-steel px-3 py-2 text-left text-sm text-plus hover:bg-rose-50"
                   onClick={async () => {
+                    // leave the page first: a login-only page would otherwise redirect to the login screen
+                    nav('/');
                     await logout();
-                    nav('/login');
                   }}
                 >
                   <LogOut className="h-4 w-4" /> Log out
@@ -154,6 +164,7 @@ function Header() {
               </div>
             )}
           </div>
+          )}
           {onlineShop && (
             <Link to="/cart" className="flex items-center gap-1.5 rounded px-2 py-1 text-white hover:ring-1 hover:ring-white/40" aria-label={`Cart, ${count} items`}>
               <span className="relative">
@@ -244,12 +255,19 @@ function Footer() {
   );
 }
 
+/** Pages that need an account (enquiries, orders, cart, account). Browsing does not. */
+export function RequireLogin({ children }: { children: ReactNode }) {
+  const { customer } = useAuth();
+  const loc = useLocation();
+  if (!customer) return <Navigate to={`/login?next=${encodeURIComponent(loc.pathname + loc.search)}`} replace />;
+  return <>{children}</>;
+}
+
 export function CustomerLayout() {
   const { customer, loading } = useAuth();
   const loc = useLocation();
   if (loading) return <Spinner />;
-  if (!customer) return <Navigate to={`/login?next=${encodeURIComponent(loc.pathname + loc.search)}`} replace />;
-  if (!customer.profileComplete) return <Navigate to={`/welcome?next=${encodeURIComponent(loc.pathname + loc.search)}`} replace />;
+  if (customer && !customer.profileComplete) return <Navigate to={`/welcome?next=${encodeURIComponent(loc.pathname + loc.search)}`} replace />;
   return (
     <div className="flex min-h-screen flex-col">
       <Header />

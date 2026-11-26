@@ -1,5 +1,5 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ShieldCheck, Wrench, BadgeCheck, Eye, EyeOff, Loader2, MailCheck } from 'lucide-react';
 import { api } from '../api/client';
 import type { Customer } from '../api/types';
@@ -151,6 +151,9 @@ export default function Login() {
           <div className="mb-10 lg:hidden">
             <Logo />
           </div>
+          <Link to="/" className="mb-6 inline-block text-sm font-semibold text-link hover:underline">
+            ← Continue browsing
+          </Link>
 
           {step === 'mobile' && (
             <form onSubmit={lookup} className="space-y-5">

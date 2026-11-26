@@ -14,7 +14,7 @@ A full-stack web app for a multi-brand battery shop, with a customer website and
 
 **Preview:** <https://ppa-battery-store.onrender.com>
 
-This is a demo on Render's free plan with a test database, not the shop's live service. Log in or create a test account to browse, and don't enter real personal details. The first visit after a quiet spell takes about a minute. Email and photo uploads are not set up.
+This is a demo on Render's free plan with a test database, not the shop's live service. Anyone can browse. Log in or create a test account to ask for a price or send an enquiry, and don't enter real personal details. The first visit after a quiet spell takes about a minute. Email and photo uploads are not set up.
 
 ## Features
 
@@ -88,6 +88,7 @@ Each change below was committed by **CI Checklist** only after its selected chec
 | Add Vercel deployment support | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45849803663) |
 | Set up a free Render preview | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45853454914) |
 | Add the preview link to the README | ✅ | – | – | – | – | – | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45863508512) |
-| Replace phone numbers and address with placeholders | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/ci-checklist.yml) |
+| Replace phone numbers and address with placeholders | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45864908285) |
+| Let visitors browse without logging in | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/ci-checklist.yml) |
 
 ✅ passed before the commit · – not selected for that commit

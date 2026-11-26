@@ -201,6 +201,12 @@ function PcbDetail({ product: p }: { product: Product }) {
                 Order again
               </button>
             </div>
+          ) : !customer ? (
+            <div className="space-y-3">
+              <p className="text-lg font-bold">Order this PCB</p>
+              <p className="text-sm text-graphite">Log in to place an order. We will contact you to confirm it.</p>
+              <Link to={`/login?next=${encodeURIComponent(`/product/${p.slug}`)}`} className="btn-primary w-full">Log in to order</Link>
+            </div>
           ) : (
             <form onSubmit={order} className="space-y-3">
               <p className="text-lg font-bold">Order this PCB</p>

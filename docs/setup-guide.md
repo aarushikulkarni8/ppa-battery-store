@@ -282,6 +282,7 @@ Each seeded product keeps its source in the `sourceUrl` / `sourceNote` fields, w
 
 ### Customer flow
 
+- **Browsing is public.** Login is asked only for enquiries (including **Ask for price**), cart and checkout, PCB orders and account pages. After logging in, the customer returns to that page.
 - **Login:** mobile number, then password. New customers add their name, email and a password.
 - **Search:** the smart search reads battery type words (bike, scooter, car, truck, inverter…), brand names, model names and capacity (`45Ah`).
   - It returns batteries grouped by brand.

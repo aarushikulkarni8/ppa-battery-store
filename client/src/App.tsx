@@ -5,7 +5,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { ToastProvider } from './context/ToastContext';
 import { SiteProvider, ShopOnly } from './context/SiteContext';
-import { CustomerLayout } from './components/Layout';
+import { CustomerLayout, RequireLogin } from './components/Layout';
 import Login from './pages/Login';
 import Welcome from './pages/Welcome';
 import ResetPassword from './pages/ResetPassword';
@@ -89,13 +89,13 @@ export default function App() {
                     <Route path="find-my-battery" element={<Navigate to="/search?q=automotive" replace />} />
                     <Route path="brands" element={<Brands />} />
                     <Route path="brands/:slug" element={<BrandDetail />} />
-                    <Route path="cart" element={<ShopOnly><Cart /></ShopOnly>} />
-                    <Route path="checkout" element={<ShopOnly><Checkout /></ShopOnly>} />
-                    <Route path="orders/:orderId/confirmed" element={<ShopOnly><OrderConfirmed /></ShopOnly>} />
-                    <Route path="enquiry" element={<Enquiry />} />
+                    <Route path="cart" element={<ShopOnly><RequireLogin><Cart /></RequireLogin></ShopOnly>} />
+                    <Route path="checkout" element={<ShopOnly><RequireLogin><Checkout /></RequireLogin></ShopOnly>} />
+                    <Route path="orders/:orderId/confirmed" element={<ShopOnly><RequireLogin><OrderConfirmed /></RequireLogin></ShopOnly>} />
+                    <Route path="enquiry" element={<RequireLogin><Enquiry /></RequireLogin>} />
                     <Route path="contact" element={<Contact />} />
                     <Route path="pcb" element={<Pcb />} />
-                    <Route path="account" element={<AccountLayout />}>
+                    <Route path="account" element={<RequireLogin><AccountLayout /></RequireLogin>}>
                       <Route index element={<><Profile /><ChangePassword /></>} />
                       <Route path="orders" element={<MyOrders />} />
                       <Route path="orders/:orderId" element={<MyOrderDetail />} />
