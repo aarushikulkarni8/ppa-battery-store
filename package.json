@@ -9,6 +9,11 @@
     "seed": "npm --prefix server run seed",
     "build": "npm --prefix client run build && npm --prefix server run build",
     "start": "npm --prefix server run start",
-    "remove-vehicles": "npm --prefix server run remove-vehicles"
+    "remove-vehicles": "npm --prefix server run remove-vehicles",
+    "typecheck": "npm --prefix server run typecheck && npm --prefix client run typecheck",
+    "test:e2e": "npm --prefix server run smoke"
+  },
+  "engines": {
+    "node": ">=20.19"
   }
 }
