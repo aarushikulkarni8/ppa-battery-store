@@ -29,7 +29,7 @@ if (cloudinaryConfigured) {
 
 export const imageUpload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 4 * 1024 * 1024 }, // stays under the 4.5 MB request limit on Vercel
   fileFilter: (_req, file, cb) => {
     if (/^image\/(png|jpe?g|webp|gif|svg\+xml)$/.test(file.mimetype)) cb(null, true);
     else cb(new HttpError(400, 'Only PNG, JPG, WEBP, GIF or SVG images are allowed'));

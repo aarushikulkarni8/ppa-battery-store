@@ -1,0 +1,31 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm ci --prefix server --include=dev && npm ci --prefix client --include=dev",
+  "buildCommand": "npm run build:vercel",
+  "outputDirectory": "client/dist",
+  "regions": [
+    "bom1"
+  ],
+  "functions": {
+    "api/index.mjs": {
+      "maxDuration": 60
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/((?!api/|uploads/|assets/).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/service-reminders",
+      "schedule": "30 4 * * *"
+    }
+  ]
+}

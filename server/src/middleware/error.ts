@@ -30,7 +30,7 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     return;
   }
   if ((err as { code?: string }).code === 'LIMIT_FILE_SIZE') {
-    res.status(413).json({ message: 'Image is too large (max 5 MB)' });
+    res.status(413).json({ message: 'Image is too large (max 4 MB)' });
     return;
   }
   console.error(err);

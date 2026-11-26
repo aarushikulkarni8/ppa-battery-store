@@ -150,17 +150,46 @@ To add photos:
 
 The server also serves the built website, so the whole site is **one web service**.
 
-### 3.1 Render, using this repository's Blueprint
+### 3.1 Vercel
+
+[`vercel.json`](../vercel.json) builds the website, publishes the product photos, runs the server as one function in Mumbai (`bom1`) and schedules the reminder job.
+
+- **Plan:** Vercel’s terms limit the free Hobby plan to personal, non-commercial use, so a shop’s website needs a paid plan.
+
+1. On <https://vercel.com>, choose **Add New → Project** and import this repository. Leave the root directory and build settings as they are.
+2. Add these environment variables for **Production**:
+
+| Variable | Value |
+|---|---|
+| `NODE_ENV` | `production` |
+| `MONGODB_URI` | your database address. In Atlas, allow access from `0.0.0.0/0` |
+| `JWT_SECRET` | a new long random string |
+| `CLIENT_ORIGIN` | the site’s public address, e.g. `https://your-project.vercel.app` |
+| `CRON_SECRET` | another long random string (at least 16 characters); Vercel sends it with the reminder job |
+| `OWNER_EMAIL`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` | email settings (section 2.2) |
+| `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | needed to upload new photos |
+| `ONLINE_SHOP` | `false` for a catalogue, `true` to take orders |
+
+3. Deploy. If you did not know the site address before the first deploy, set `CLIENT_ORIGIN` afterwards and redeploy.
+4. Load products and create the first admin by running `npm run seed` **on your computer**, with `server/.env` pointing at the live database. It adds missing records and does not overwrite your prices, stock or images.
+
+Differences on Vercel:
+
+- Reminders run once a day at about 10:00 India time, not every hour.
+- Photo uploads are limited to 4 MB, and each spreadsheet import must stay under 4.5 MB.
+- Request rate limits are counted separately by each server instance. The lock after five wrong passwords is stored in the database, so it still applies.
+
+### 3.2 Render, using this repository's Blueprint
 
 1. On <https://render.com>, choose **New → Blueprint** and pick this repository. Render reads [`render.yaml`](../render.yaml).
 2. Enter the values it asks for: the database address, the site's public address (`CLIENT_ORIGIN`), email, Cloudinary and the first admin login. `JWT_SECRET` is generated for you.
-3. Deploy, then run the seed once from the Render **Shell**:
+3. Deploy, then run the seed once from the Render **Shell** (paid plans only; Render uses a paid plan unless you add a `plan` to `render.yaml`):
 
 ```bash
 node dist/seed/seed.js
 ```
 
-### 3.2 Docker, on any host
+### 3.3 Docker, on any host
 
 [`Dockerfile`](../Dockerfile) builds the website and server into one image:
 
@@ -169,7 +198,7 @@ docker build -t ppa-battery-store .
 docker run -p 5000:5000 --env-file server/.env -e NODE_ENV=production ppa-battery-store
 ```
 
-### 3.3 Without Docker
+### 3.4 Without Docker
 
 | Setting | Value |
 |---|---|

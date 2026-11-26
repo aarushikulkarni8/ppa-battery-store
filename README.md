@@ -36,7 +36,7 @@ A full-stack web app for a multi-brand battery shop, with a customer website and
 | Database | MongoDB Atlas |
 | Email | Nodemailer over SMTP |
 | Images | Cloudinary, or local storage during development |
-| Delivery | Docker, Render Blueprint, GitHub Actions |
+| Delivery | Vercel, Docker, Render Blueprint, GitHub Actions |
 
 ## Getting started
 
@@ -65,6 +65,8 @@ scripts/             repository checks
 .github/workflows/   GitHub Actions checks
 Dockerfile           production image
 render.yaml          Render hosting setup
+vercel.json          Vercel hosting setup
+api/                 Vercel server function
 ```
 
 ## Commit checklists
@@ -78,6 +80,7 @@ Each change below was committed by **CI Checklist** only after its selected chec
 | Upgrade vulnerable packages and extend end-to-end tests | ✅ | ✅ | ✅ | ✅ | ✅ | – | – | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45840992717) |
 | Add Docker and Render deployment setup | ✅ | – | ✅ | ✅ | ✅ | ✅ | – | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45841366018) |
 | Update documentation and fix shop closing time | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45841741800) |
-| Add Exide and Bosch products and update the shop phone number | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/ci-checklist.yml) |
+| Add Exide and Bosch products and update the shop phone number | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45847578087) |
+| Add Vercel deployment support | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/ci-checklist.yml) |
 
 ✅ passed before the commit · – not selected for that commit
