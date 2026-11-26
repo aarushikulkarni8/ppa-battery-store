@@ -102,7 +102,7 @@ export default function Home() {
         <div className="relative grid grid-cols-1 items-center gap-6 p-3 sm:p-6 lg:grid-cols-[minmax(0,420px)_1fr] lg:gap-12 lg:p-8">
           <Finder />
           <div className="hidden lg:block">
-            <h1 className="max-w-lg text-[44px] font-bold leading-[1.02]">Amaron, Exide and Bosch batteries in Hubballi</h1>
+            <h1 className="max-w-lg text-[44px] font-bold leading-[1.02]">Amaron, Exide and Bosch batteries in Sample City</h1>
             <p className="mt-3 max-w-md text-white/75">
               Automotive, two wheeler and inverter batteries, with the manufacturer's warranty recorded against every battery you buy.
             </p>

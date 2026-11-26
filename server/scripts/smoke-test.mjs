@@ -64,7 +64,7 @@ r = await call('customer', '/cart/items', { method: 'PUT', body: { productId: bi
 ok(r.data.count === 2, 'added 2 to cart');
 r = await call('customer', '/orders', {
   body: { name: 'Test Customer', vehicleText: 'Honda Activa 6G', registrationNumber: 'KA25X1', fulfilment: 'DELIVERY_INSTALL',
-    address: { line1: '1 CBT Road', city: 'Hubballi', pincode: '580028' }, paymentMethod: 'COD' },
+    address: { line1: 'Dummy Street', city: 'Sample City', pincode: '000000' }, paymentMethod: 'COD' },
 });
 ok(r.status === 201, 'cart order placed ' + r.data?.orderId, JSON.stringify(r.data));
 const cartOrder = r.data.orderId;

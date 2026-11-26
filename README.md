@@ -8,7 +8,7 @@
 [![Deployment](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/deployment.yml/badge.svg?branch=main)](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/deployment.yml)
 [![Docs](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/docs.yml)
 
-*Your Trusted Multi-Brand Battery Partner* · Hubballi
+*Your Trusted Multi-Brand Battery Partner* · Sample City
 
 A full-stack web app for a multi-brand battery shop, with a customer website and an admin console.
 
@@ -87,6 +87,7 @@ Each change below was committed by **CI Checklist** only after its selected chec
 | Add Exide and Bosch products and update the shop phone number | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45847578087) |
 | Add Vercel deployment support | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45849803663) |
 | Set up a free Render preview | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45853454914) |
-| Add the preview link to the README | ✅ | – | – | – | – | – | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/ci-checklist.yml) |
+| Add the preview link to the README | ✅ | – | – | – | – | – | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45863508512) |
+| Replace phone numbers and address with placeholders | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/ci-checklist.yml) |
 
 ✅ passed before the commit · – not selected for that commit

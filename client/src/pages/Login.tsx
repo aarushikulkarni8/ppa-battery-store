@@ -136,7 +136,7 @@ export default function Login() {
           <p className="mt-4 text-white/70">Amaron, Exide and Bosch, matched to your bike, car, truck or tractor. Installation on request, backed by the manufacturer’s warranty.</p>
           <ul className="mt-8 space-y-3 text-sm">
             <li className="flex gap-3"><ShieldCheck className="h-5 w-5 text-volt" /> Warranty tracked against every battery you buy</li>
-            <li className="flex gap-3"><Wrench className="h-5 w-5 text-volt" /> Installation on request, at our Hubballi shop</li>
+            <li className="flex gap-3"><Wrench className="h-5 w-5 text-volt" /> Installation on request, at our Sample City shop</li>
             <li className="flex gap-3"><BadgeCheck className="h-5 w-5 text-volt" /> Genuine stock, with invoice</li>
           </ul>
         </div>

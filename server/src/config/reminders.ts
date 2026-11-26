@@ -18,5 +18,5 @@ export const REMINDER = {
 This is half-yearly reminder that your battery needs a half yearly servicing. For further information, please contact Prashant and Prashant Associates.
 Regards,
 Prashant and Prashant Associates
-+91 7411917521`,
++91 0000000000`,
 };

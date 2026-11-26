@@ -45,7 +45,7 @@ export default function Customers() {
       <form onSubmit={submit} className="mb-5 flex max-w-2xl gap-2">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-300" />
-          <input className="input pl-10 text-base" value={term} onChange={(e) => setTerm(e.target.value)} placeholder="e.g. Rahul Sharma, 9876543210, rahul@…" autoFocus />
+          <input className="input pl-10 text-base" value={term} onChange={(e) => setTerm(e.target.value)} placeholder="e.g. Rahul Sharma, 0000000000, rahul@…" autoFocus />
         </div>
         <button className="btn-primary">Search</button>
       </form>

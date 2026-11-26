@@ -30,8 +30,8 @@ export default function Checkout() {
   const [address, setAddress] = useState({
     line1: customer?.address.line1 ?? '',
     line2: customer?.address.line2 ?? '',
-    city: customer?.address.city || 'Hubballi',
-    state: customer?.address.state || 'Karnataka',
+    city: customer?.address.city || 'Sample City',
+    state: customer?.address.state || 'Sample State',
     pincode: customer?.address.pincode ?? '',
   });
   const [notes, setNotes] = useState('');

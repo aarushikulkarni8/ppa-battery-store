@@ -17,7 +17,7 @@ export function Logo({ light = false, compact = false }: { light?: boolean; comp
           Prashant &amp; Prashant
         </span>
         <span className={`block whitespace-nowrap text-[11.5px] font-medium ${light ? 'text-white/65' : 'text-graphite'}`}>
-          Associates, Hubballi
+          Associates, Sample City
         </span>
       </span>
     </span>

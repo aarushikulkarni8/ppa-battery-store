@@ -361,13 +361,13 @@ export default function ProductDetail() {
           <ul className="mt-3 space-y-2 text-[13.5px] text-graphite">
             {onlineShop ? (
               <>
-                <li className="flex gap-2"><Truck className="mt-0.5 h-4 w-4 shrink-0 text-ink" /> Delivery with installation in Hubballi</li>
+                <li className="flex gap-2"><Truck className="mt-0.5 h-4 w-4 shrink-0 text-ink" /> Delivery with installation in Sample City</li>
                 <li className="flex gap-2"><Store className="mt-0.5 h-4 w-4 shrink-0 text-ink" /> Or pick up at the shop</li>
                 <li className="flex gap-2"><Banknote className="mt-0.5 h-4 w-4 shrink-0 text-ink" /> Cash on delivery or pay at store</li>
               </>
             ) : (
               <>
-                <li className="flex gap-2"><Store className="mt-0.5 h-4 w-4 shrink-0 text-ink" /> Available at our Hubballi shop</li>
+                <li className="flex gap-2"><Store className="mt-0.5 h-4 w-4 shrink-0 text-ink" /> Available at our Sample City shop</li>
                 <li className="flex gap-2"><Truck className="mt-0.5 h-4 w-4 shrink-0 text-ink" /> Installation on request</li>
               </>
             )}

@@ -5,13 +5,13 @@ import { CONTACT } from '../config/contact';
 import { PhoneAction } from '../components/PhoneAction';
 
 const address = STORE.addressLines.join(', ');
-const mapEmbed = `https://maps.google.com/maps?q=${encodeURIComponent(`${STORE.name}, ${address}`)}&z=16&output=embed`;
+const mapEmbed = `https://maps.google.com/maps?q=${encodeURIComponent(address)}&z=16&output=embed`;
 
 export default function Contact() {
   const phones = [STORE.phone, ...CONTACT.otherPhones].filter(Boolean);
   const about =
     CONTACT.about ||
-    `${STORE.name} is a multi-brand battery shop in Hubballi. We sell Amaron, Exide and Bosch batteries for bikes, scooters, cars, commercial vehicles and tractors, and help customers find the right battery for their vehicle and with warranty claims.`;
+    `${STORE.name} is a multi-brand battery shop in Sample City. We sell Amaron, Exide and Bosch batteries for bikes, scooters, cars, commercial vehicles and tractors, and help customers find the right battery for their vehicle and with warranty claims.`;
 
   return (
     <div className="container-x space-y-3 py-3 sm:space-y-4 sm:py-4">
@@ -95,7 +95,7 @@ export default function Contact() {
                 </span>
                 <div>
                   <p className="font-semibold">{STORE.name}</p>
-                  <p className="text-sm text-graphite">{CONTACT.since ? `Serving Hubballi since ${CONTACT.since}` : 'Hubballi, Karnataka'}</p>
+                  <p className="text-sm text-graphite">{CONTACT.since ? `Serving Sample City since ${CONTACT.since}` : 'Sample City, Sample State'}</p>
                 </div>
               </div>
             </div>

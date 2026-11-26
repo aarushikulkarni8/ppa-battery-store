@@ -155,7 +155,7 @@ export default function StoreSale() {
                     maxLength={10}
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))}
-                    placeholder="98xxxxxxxx"
+                    placeholder="00xxxxxxxx"
                     autoFocus={!mobile}
                     required
                   />

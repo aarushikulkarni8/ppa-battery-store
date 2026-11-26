@@ -1,6 +1,6 @@
 # Prashant and Prashant Associates — battery store
 
-*Your Trusted Multi-Brand Battery Partner* · Near Raghavendra Math, CBT Road, Hubballi
+*Your Trusted Multi-Brand Battery Partner* · Dummy Street, Sample Area, Sample City
 
 A full-stack store for a multi-brand battery shop. It has two sides:
 

@@ -84,7 +84,7 @@ const addressSchema = z.object({
   line1: z.string().trim().min(3, 'Enter the address').max(200),
   line2: z.string().trim().max(200).optional().default(''),
   city: z.string().trim().min(2, 'Enter the city').max(80),
-  state: z.string().trim().max(80).optional().default('Karnataka'),
+  state: z.string().trim().max(80).optional().default('Sample State'),
   pincode: z.string().regex(/^\d{6}$/, 'Pincode must be 6 digits'),
 });
 
