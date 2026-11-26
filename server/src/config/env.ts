@@ -18,7 +18,6 @@ export const env = {
   PORT: Number(opt('PORT', '5000')),
   MONGODB_URI: required('MONGODB_URI'),
   JWT_SECRET,
-  OTP_SECRET: opt('OTP_SECRET') || JWT_SECRET,
   CLIENT_ORIGIN: opt('CLIENT_ORIGIN', 'http://localhost:5173'),
 
   OWNER_EMAIL: opt('OWNER_EMAIL'),
@@ -28,14 +27,6 @@ export const env = {
   SMTP_PASSWORD: opt('SMTP_PASSWORD'),
   SMTP_FROM: opt('SMTP_FROM'),
 
-  SMS_PROVIDER: opt('SMS_PROVIDER', 'console') as 'console' | 'msg91' | 'twilio',
-  MSG91_AUTH_KEY: opt('MSG91_AUTH_KEY'),
-  MSG91_TEMPLATE_ID: opt('MSG91_TEMPLATE_ID'),
-  MSG91_OTP_VAR: opt('MSG91_OTP_VAR', 'otp'),
-  TWILIO_ACCOUNT_SID: opt('TWILIO_ACCOUNT_SID'),
-  TWILIO_AUTH_TOKEN: opt('TWILIO_AUTH_TOKEN'),
-  TWILIO_FROM: opt('TWILIO_FROM'),
-  ALLOW_CONSOLE_OTP: opt('ALLOW_CONSOLE_OTP') === 'true',
   /** true = show prices and allow cart/checkout on the website. Anything else = catalogue only (enquiries). */
   ONLINE_SHOP: opt('ONLINE_SHOP') === 'true',
   /** Half-yearly service reminder emails: on unless set to 'off'. */
@@ -52,5 +43,3 @@ export const env = {
   ADMIN_PASSWORD: opt('ADMIN_PASSWORD'),
   SEED_DEFAULT_STOCK: Number(opt('SEED_DEFAULT_STOCK', '10')),
 };
-
-// (OTP by SMS is no longer used for customer login; customers log in with mobile + password.)

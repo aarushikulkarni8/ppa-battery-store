@@ -65,18 +65,6 @@ export default function Search() {
                 <Link className="font-semibold underline" to={`/enquiry?type=Product+Enquiry&product_label=${encodeURIComponent(`${data.interpretation.capacityAh}Ah battery`)}`}>ask the shop</Link>.
               </p>
             )}
-            {false && vehicles.length > 1 && (
-              <div className="mt-4">
-                <p className="text-sm font-semibold text-graphite">Matching vehicles — pick yours for an exact fit:</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {vehicles.slice(0, 16).map((v) => (
-                    <Link key={v._id} to={`/find-my-battery?vehicle=${v._id}`} className="rounded-full border border-steel bg-white px-3 py-1 text-sm hover:border-ink">
-                      {v.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
           </header>
           {data.total === 0 && vehicles.length === 0 && !data.interpretation.category && !data.interpretation.brand ? (
             <Empty

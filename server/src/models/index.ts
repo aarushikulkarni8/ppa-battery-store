@@ -4,7 +4,6 @@ export { Inventory } from './Inventory.js';
 export { Vehicle, vehicleSearchText, vehicleLabel } from './Vehicle.js';
 export { VehicleCompatibility } from './VehicleCompatibility.js';
 export { Customer } from './Customer.js';
-export { Otp } from './Otp.js';
 export { Order } from './Order.js';
 export { OrderItem } from './OrderItem.js';
 export { PurchaseHistory } from './PurchaseHistory.js';

@@ -60,7 +60,7 @@ app.use(errorHandler);
 
 connectDb()
   .then(() => {
-    app.listen(env.PORT, () => console.log(`[api] listening on http://localhost:${env.PORT}  (SMS: ${env.SMS_PROVIDER})`));
+    app.listen(env.PORT, () => console.log(`[api] listening on http://localhost:${env.PORT}`));
     verifyMailer();
     startReminderScheduler();
   })
