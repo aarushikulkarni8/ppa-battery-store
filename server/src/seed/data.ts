@@ -7,8 +7,7 @@
  * instead of guessed — fill it in from /admin. Prices are Amaron's online prices at
  * the time of writing; set your own shop prices in /admin.
  *
- * Exide and Bosch are created as brands with the same product structure but no
- * products, so the owner can add their real models, warranties and images.
+ * Exide and Bosch products are in data-exide-bosch.ts.
  */
 import type { VehicleCategory } from '../config/constants.js';
 
@@ -67,6 +66,7 @@ export interface SeedProduct {
   voltage: number;
   capacityAh: number;
   cca?: number | null;
+  weightKg?: number | null;
   dimensions?: { lengthMm: number | null; widthMm: number | null; heightMm: number | null };
   terminalLayout?: string;
   warranty: { totalMonths: number; freeMonths: number | null; proRataMonths: number | null; notes?: string };

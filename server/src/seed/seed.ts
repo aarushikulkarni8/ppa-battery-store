@@ -4,13 +4,16 @@ import { env } from '../config/env.js';
 import { connectDb } from '../config/db.js';
 import { Admin, Brand, Inventory, Product, Vehicle, VehicleCompatibility } from '../models/index.js';
 import { slugify } from '../utils/http.js';
-import { brands, products } from './data.js';
+import { brands, products as amaronProducts } from './data.js';
+import { boschProducts, exideProducts } from './data-exide-bosch.js';
 
 /**
  * Idempotent: running it again updates seed records by slug/SKU and never deletes
  * customers, orders or anything the owner added. It will NOT overwrite prices,
  * stock or images you have changed in /admin.
  */
+const products = [...amaronProducts, ...exideProducts, ...boschProducts];
+
 async function run() {
   await connectDb();
 

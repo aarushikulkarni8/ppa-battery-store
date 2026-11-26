@@ -56,7 +56,7 @@ From the project root:
 
 ```bash
 npm run install:all   # installs server and client
-npm run seed          # brands, Amaron products, admin user
+npm run seed          # brands, Amaron, Exide and Bosch products, admin user
 npm run dev:server    # terminal 1 → API on http://localhost:5000
 npm run dev:client    # terminal 2 → site on http://localhost:5173
 ```
@@ -213,7 +213,7 @@ Changes to files in `.github/workflows/` can't go through CI Checklist; commit t
 
 ## 5. What the owner needs to fill in
 
-This project only contains product data that could be checked against official Amaron sources. Nothing was invented. Before launch:
+The product data comes from the makers’ own publications (see below). Nothing was invented. Before launch:
 
 1. **Shop phone, WhatsApp and hours:** check `client/src/config/store.ts` and `client/src/config/contact.ts`, then rebuild. The number in the reminder email is set separately in `server/src/config/reminders.ts`.
 2. **Product photos:** upload the real photo for each product in **Admin → Products**.
@@ -222,13 +222,18 @@ This project only contains product data that could be checked against official A
    - Set a selling price and stock in **Admin → Products** to make a product orderable online.
    - Seeded stock is a placeholder (`SEED_DEFAULT_STOCK`), so set the real quantities.
 4. **Exide and Bosch products:**
-   - Both brands exist but have no products yet.
-   - Add them in **Admin → Products → Add product** (or **Bulk import**) using the manufacturers' official spec sheets and warranty cards.
+   - 61 Exide and 49 Bosch batteries are included, without prices or photos.
+   - Keep only what the shop sells: deactivate the rest in **Admin → Products**.
+   - The Bosch data is from the 2023 catalogue, so confirm each model is still sold and check its current warranty.
+   - Bosch model codes are as printed in that catalogue (check `00D04R` and `50031R` against the label).
+   - Exide’s page shows two different warranty periods for `IMTT3000`; confirm it on the warranty card.
 5. **Warranty terms:** each product stores total, free-replacement and pro-rata months from the manufacturer's card. Where the free/pro-rata split was not published (e.g. Amaron PRO 50B20L), only the total is stored, with a note.
 
 ### Where the seeded data came from
 
 - **Amaron product pages** for AP-BTZ5L, AP-BTZ9R, FLO BH40B20L, FLO 40B20L and PRO 50B20L: specs, dimensions, warranty and prices.
+- **Exide:** the specification tables on the exidecare.com pages for Mileage, Matrix, EEZY, EPIQ, Xplore, InvaTubular and InvaMaster (read 26 Nov 2026).
+- **Bosch:** the Technical Data table in Bosch India’s 2023 battery catalogue. Neither maker’s table prints voltage; 12 V is entered.
 - **Amaron's official application chart (PDF):** two-wheeler Beta-series capacities and warranty.
 
 Each seeded product keeps its source in the `sourceUrl` / `sourceNote` fields, which are visible in the admin product form.

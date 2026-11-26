@@ -77,6 +77,7 @@ Each change below was committed by **CI Checklist** only after its selected chec
 | Remove unused vehicle finder and SMS login code | ✅ | – | ✅ | ✅ | ✅ | – | – | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45840575428) |
 | Upgrade vulnerable packages and extend end-to-end tests | ✅ | ✅ | ✅ | ✅ | ✅ | – | – | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45840992717) |
 | Add Docker and Render deployment setup | ✅ | – | ✅ | ✅ | ✅ | ✅ | – | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45841366018) |
-| Update documentation and fix shop closing time | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/ci-checklist.yml) |
+| Update documentation and fix shop closing time | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/runs/45841741800) |
+| Add Exide and Bosch products and update the shop phone number | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [view](https://github.com/aarushikulkarni8/ppa-battery-store/actions/workflows/ci-checklist.yml) |
 
 ✅ passed before the commit · – not selected for that commit
