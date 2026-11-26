@@ -1,0 +1,122 @@
+name: CI Checklist
+
+# Run from the Actions tab. The project is committed to main only if every check passes.
+on:
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: Branch holding the uploaded project
+        required: true
+        default: upload-staging
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ci-checklist
+  cancel-in-progress: false
+
+jobs:
+  checklist:
+    name: Checklist
+    if: github.actor == github.repository_owner
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.version.outputs.sha }}
+    steps:
+      - name: Check out the uploaded project
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_branch }}
+
+      - name: Record the checked version
+        id: version
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: No environment files, dependencies or build output
+        run: |
+          if git ls-files | grep -E '(^|/)(\.env|\.env\.local|\.env\.production)$|(^|/)(node_modules|dist)/'; then
+            echo "::error::Files that must not be published are tracked"; exit 1
+          fi
+
+      - name: No hard-coded secrets
+        run: |
+          if git grep -nIE -e '-----BEGIN [A-Z ]*PRIVATE KEY-----' -e 'AKIA[0-9A-Z]{16}' -e 'gh[pousr]_[A-Za-z0-9]{36}' -e 'mongodb(\+srv)?://[^:/ ]+:[^@ ]+@' -- . ':(exclude).github' | grep -v 'USER:PASSWORD@'; then
+            echo "::error::Possible secret found"; exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install server dependencies
+        run: npm ci
+        working-directory: ppa/server
+
+      - name: Type-check and build server
+        run: npm run typecheck && npm run build
+        working-directory: ppa/server
+
+      - name: Install client dependencies
+        run: npm ci
+        working-directory: ppa/client
+
+      - name: Type-check and build client
+        run: npm run build
+        working-directory: ppa/client
+
+  commit:
+    name: Commit to main
+    needs: checklist
+    runs-on: ubuntu-latest
+    env:
+      GIT_AUTHOR_NAME: Aarushi Kulkarni
+      GIT_AUTHOR_EMAIL: 242779245+aarushikulkarni8@users.noreply.github.com
+      GIT_COMMITTER_NAME: Aarushi Kulkarni
+      GIT_COMMITTER_EMAIL: 242779245+aarushikulkarni8@users.noreply.github.com
+      SOURCE_SHA: ${{ needs.checklist.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Commit the project in parts
+        run: |
+          set -euo pipefail
+          git fetch origin "$SOURCE_SHA"
+
+          commit_part() {
+            message="$1"; shift
+            git checkout "$SOURCE_SHA" -- "$@"
+            if git diff --cached --quiet; then
+              echo "Nothing new for: $message"
+            else
+              git commit -m "$message"
+            fi
+          }
+
+          commit_part "Add project documentation and setup files" ppa/README.md ppa/package.json ppa/.gitignore
+          commit_part "Add server API" ppa/server ':(exclude)ppa/server/uploads'
+          commit_part "Add client web app" ppa/client
+          commit_part "Add battery product data" batteries.csv
+          commit_part "Add product photos" ppa/server/uploads
+
+          # main must now match the checked upload exactly
+          git diff --exit-code "$SOURCE_SHA" HEAD
+          git push origin HEAD:main
+
+      - name: Summary
+        run: |
+          {
+            echo "### Checklist passed"
+            echo "- [x] No environment files, dependencies or build output"
+            echo "- [x] No hard-coded secrets"
+            echo "- [x] Server type-check and build"
+            echo "- [x] Client type-check and build"
+            echo
+            echo '### Commits on main'
+            echo '```'
+            git log --format='%h  %an  %s'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
