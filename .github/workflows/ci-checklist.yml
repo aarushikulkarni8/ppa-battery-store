@@ -1,6 +1,7 @@
 name: CI Checklist
+run-name: ${{ inputs.commit_message }}
 
-# Run from the Actions tab. Uploaded changes are committed to main only if every check passes.
+# Run from the Actions tab. Uploaded changes are committed to main only if every selected check passes.
 on:
   workflow_dispatch:
     inputs:
@@ -11,75 +12,109 @@ on:
       commit_message:
         description: Commit message
         required: true
+      checks:
+        description: "Checks to run (security always runs): dependencies server website e2e deployment docs"
+        required: true
+        default: dependencies server website e2e deployment docs
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ci-checklist
   cancel-in-progress: false
 
 jobs:
-  checklist:
-    name: Checklist
+  prepare:
+    name: Prepare
     if: github.actor == github.repository_owner
     runs-on: ubuntu-latest
     outputs:
       sha: ${{ steps.version.outputs.sha }}
     steps:
-      - name: Check out the uploaded changes
-        uses: actions/checkout@v4
+      - name: Reject unknown check names
+        env:
+          CHECKS: ${{ inputs.checks }}
+        run: |
+          for name in $CHECKS; do
+            case "$name" in
+              dependencies|server|website|e2e|deployment|docs) ;;
+              *) echo "::error::Unknown check: $name"; exit 1 ;;
+            esac
+          done
+      - uses: actions/checkout@v5
         with:
           ref: ${{ inputs.source_branch }}
-
-      - name: Record the checked version
+      - name: Record the version being checked
         id: version
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: No environment files, dependencies or build output
-        run: |
-          if git ls-files | grep -E '(^|/)(\.env|\.env\.local|\.env\.production)$|(^|/)(node_modules|dist)/'; then
-            echo "::error::Files that must not be published are tracked"; exit 1
-          fi
+  security:
+    needs: prepare
+    uses: ./.github/workflows/security.yml
+    with:
+      ref: ${{ needs.prepare.outputs.sha }}
 
-      - name: No hard-coded secrets
-        run: |
-          if git grep -nIE -e '-----BEGIN [A-Z ]*PRIVATE KEY-----' -e 'AKIA[0-9A-Z]{16}' -e 'gh[pousr]_[A-Za-z0-9]{36}' -e 'mongodb(\+srv)?://[^:/ ]+:[^@ ]+@' -- . ':(exclude).github' | grep -v 'USER:PASSWORD@'; then
-            echo "::error::Possible secret found"; exit 1
-          fi
+  dependencies:
+    needs: prepare
+    if: contains(inputs.checks, 'dependencies')
+    uses: ./.github/workflows/dependencies.yml
+    with:
+      ref: ${{ needs.prepare.outputs.sha }}
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
+  server:
+    needs: prepare
+    if: contains(inputs.checks, 'server')
+    uses: ./.github/workflows/server.yml
+    with:
+      ref: ${{ needs.prepare.outputs.sha }}
 
-      - name: Install server dependencies
-        run: npm ci
-        working-directory: ppa/server
+  website:
+    needs: prepare
+    if: contains(inputs.checks, 'website')
+    uses: ./.github/workflows/website.yml
+    with:
+      ref: ${{ needs.prepare.outputs.sha }}
 
-      - name: Type-check and build server
-        run: npm run typecheck && npm run build
-        working-directory: ppa/server
+  e2e:
+    needs: prepare
+    if: contains(inputs.checks, 'e2e')
+    uses: ./.github/workflows/e2e.yml
+    with:
+      ref: ${{ needs.prepare.outputs.sha }}
 
-      - name: Install client dependencies
-        run: npm ci
-        working-directory: ppa/client
+  deployment:
+    needs: prepare
+    if: contains(inputs.checks, 'deployment')
+    uses: ./.github/workflows/deployment.yml
+    with:
+      ref: ${{ needs.prepare.outputs.sha }}
 
-      - name: Type-check and build client
-        run: npm run build
-        working-directory: ppa/client
+  docs:
+    needs: prepare
+    if: contains(inputs.checks, 'docs')
+    uses: ./.github/workflows/docs.yml
+    with:
+      ref: ${{ needs.prepare.outputs.sha }}
 
   commit:
     name: Commit to main
-    needs: checklist
+    needs: [prepare, security, dependencies, server, website, e2e, deployment, docs]
+    # Unselected checks are skipped. Any failed or cancelled check stops the commit.
+    if: ${{ !cancelled() && !failure() && needs.prepare.result == 'success' && needs.security.result == 'success' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write # to refresh the README badges
     env:
       GIT_AUTHOR_NAME: Aarushi Kulkarni
       GIT_AUTHOR_EMAIL: 242779245+aarushikulkarni8@users.noreply.github.com
       GIT_COMMITTER_NAME: Aarushi Kulkarni
       GIT_COMMITTER_EMAIL: 242779245+aarushikulkarni8@users.noreply.github.com
-      SOURCE_SHA: ${{ needs.checklist.outputs.sha }}
+      SOURCE_SHA: ${{ needs.prepare.outputs.sha }}
+      CHECKS: ${{ inputs.checks }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: main
           fetch-depth: 0
@@ -106,17 +141,33 @@ jobs:
             git push origin HEAD:main
           fi
 
-      - name: Summary
+      - name: Refresh the README badges
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for name in security $CHECKS; do
+            gh workflow run "$name.yml" --ref main
+          done
+
+      - name: Checklist summary
+        env:
+          RESULTS: |
+            Security=${{ needs.security.result }}
+            Dependency audit=${{ needs.dependencies.result }}
+            Server build=${{ needs.server.result }}
+            Website build=${{ needs.website.result }}
+            End-to-end tests=${{ needs.e2e.result }}
+            Deployment=${{ needs.deployment.result }}
+            Docs=${{ needs.docs.result }}
         run: |
           {
-            echo "### Checklist passed"
-            echo "- [x] No environment files, dependencies or build output"
-            echo "- [x] No hard-coded secrets"
-            echo "- [x] Server type-check and build"
-            echo "- [x] Client type-check and build"
+            echo "### Commit checklist"
+            echo "$RESULTS" | while IFS='=' read -r label result; do
+              case "$result" in
+                success) echo "- [x] $label" ;;
+                skipped) echo "- [ ] $label (not selected for this commit)" ;;
+              esac
+            done
             echo
-            echo '### Commits on main'
-            echo '```'
-            git log -10 --format='%h  %an  %s'
-            echo '```'
+            echo "Commit: $(git log -1 --format='%h %s (%an)')"
           } >> "$GITHUB_STEP_SUMMARY"

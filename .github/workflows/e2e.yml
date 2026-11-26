@@ -1,0 +1,53 @@
+name: End-to-end tests
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: false
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: End-to-end tests
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:8.0
+        ports:
+          - 27017:27017
+    # A throwaway database that exists only for this run.
+    env:
+      NODE_ENV: development
+      PORT: 5000
+      MONGODB_URI: mongodb://127.0.0.1:27017/ppa_test
+      ONLINE_SHOP: "true"
+      SERVICE_REMINDERS: "off"
+      ADMIN_EMAIL: owner@example.com
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Create one-time test secrets
+        run: |
+          echo "JWT_SECRET=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+          echo "ADMIN_PASSWORD=Aa1$(openssl rand -hex 12)" >> "$GITHUB_ENV"
+      - run: npm ci
+      - run: npm run build
+      - name: Load sample data
+        run: node dist/seed/seed.js
+      - name: Run the tests against a running server
+        run: |
+          node dist/index.js > api.log 2>&1 &
+          for i in $(seq 1 60); do curl -fs http://localhost:5000/api/health && break; sleep 1; done
+          npm run smoke || { cat api.log; exit 1; }

@@ -1,0 +1,33 @@
+name: Security
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: false
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+
+      - name: No environment files, dependencies or build output
+        run: |
+          if git ls-files | grep -E '(^|/)(\.env|\.env\.local|\.env\.production)$|(^|/)(node_modules|dist)/'; then
+            echo "::error::Files that must not be published are tracked"; exit 1
+          fi
+
+      - name: No hard-coded secrets
+        run: |
+          if git grep -nIE -e '-----BEGIN [A-Z ]*PRIVATE KEY-----' -e 'AKIA[0-9A-Z]{16}' -e 'gh[pousr]_[A-Za-z0-9]{36}' -e 'mongodb(\+srv)?://[^:/ ]+:[^@ ]+@' -- . ':(exclude).github' | grep -v 'USER:PASSWORD@'; then
+            echo "::error::Possible secret found"; exit 1
+          fi

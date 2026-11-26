@@ -1,0 +1,38 @@
+name: Deployment
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: false
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Deployment
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:8.0
+        ports:
+          - 27017:27017
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Build the Docker image
+        run: docker build -t ppa-battery-store .
+      - name: Start it in production mode and check it responds
+        run: |
+          docker run -d --name app --network host \
+            -e MONGODB_URI=mongodb://127.0.0.1:27017/ppa_test \
+            -e JWT_SECRET="$(openssl rand -hex 32)" \
+            -e SERVICE_REMINDERS=off \
+            ppa-battery-store
+          for i in $(seq 1 60); do curl -fs http://localhost:5000/api/health && break; sleep 1; done
+          curl -fs http://localhost:5000/api/health || { docker logs app; exit 1; }
+          curl -fs http://localhost:5000/ | grep -q '<div id="root">' || { docker logs app; exit 1; }
