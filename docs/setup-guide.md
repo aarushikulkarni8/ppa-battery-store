@@ -181,9 +181,18 @@ Differences on Vercel:
 
 ### 3.2 Render, using this repository's Blueprint
 
+`render.yaml` is set to Render's **free** plan in Singapore, which is only suitable for a **preview**:
+
+- [Render says](https://render.com/docs/free) not to use free instances for production.
+- The site sleeps after 15 minutes without visitors and takes about a minute to wake. Reminders do not run while it sleeps.
+- Email on ports 25, 465 and 587 is blocked, so leave the email settings empty.
+- Use a separate test database, with no real customer data.
+
+For a live shop, change `plan` to a paid one.
+
 1. On <https://render.com>, choose **New → Blueprint** and pick this repository. Render reads [`render.yaml`](../render.yaml).
 2. Enter the values it asks for: the database address, the site's public address (`CLIENT_ORIGIN`), email, Cloudinary and the first admin login. `JWT_SECRET` is generated for you.
-3. Deploy, then run the seed once from the Render **Shell** (paid plans only; Render uses a paid plan unless you add a `plan` to `render.yaml`):
+3. Deploy, then load the products. On the free plan, which has no shell, run `npm run seed` on your computer with `MONGODB_URI` set to the preview database. On a paid plan, run this once from the Render **Shell**:
 
 ```bash
 node dist/seed/seed.js
